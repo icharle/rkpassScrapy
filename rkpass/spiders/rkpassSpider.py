@@ -8,19 +8,18 @@ class RkpassspiderSpider(scrapy.Spider):
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
 
-    for i in range(1, 20):
+    for i in range(23, 24):
         start_urls.append('http://www.rkpass.cn/tk_timu/6_553_' + str(i) + '_xuanze.html')
 
     def parse(self, response):
-        data = response.xpath(".//td/span[@class='shisi_text']//text()").extract()  # 爬取题目及选项答案
         dataimg = response.xpath(".//span[@class='shisi_text']/img[last()]/@src").extract()  # 爬取题目及选项中图片
         product_id = re.findall('\((.*?)\)', response.xpath(".//script//text()").extract()[0])[0].split(',')[0].strip(
             "'")  # 该题目id 用于整理答案
-        question = "".join(data[0:len(data) - 4])  # 题目
-        A = "".join(data[len(data) - 4].split())  # A选项
-        B = "".join(data[len(data) - 3].split())  # B选项
-        C = "".join(data[len(data) - 2].split())  # C选项
-        D = "".join(data[len(data) - 1].split())  # D选项
+        question = "".join(response.xpath(".//table/tr[2]/td/span[@class='shisi_text']//text()").extract())  # 题目
+        A = "".join("".join(response.xpath(".//table/tr[5]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
+        B = "".join("".join(response.xpath(".//table/tr[7]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
+        C = "".join("".join(response.xpath(".//table/tr[9]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
+        D = "".join("".join(response.xpath(".//table/tr[11]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
 
         questionImg = ''  # 初始化 防止插库失败
         if len(dataimg) > 0:  # 判断题目及选项中是否有图片
@@ -37,7 +36,8 @@ class RkpassspiderSpider(scrapy.Spider):
                 B = B + dataimg[2]
                 C = C + dataimg[3]
                 D = D + dataimg[4]
-        # print(question)
+        print(C)
+        print(question)
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
         yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
