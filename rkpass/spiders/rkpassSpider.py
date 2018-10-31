@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+from rkpass.items import RkpassItem
 
 
 class RkpassspiderSpider(scrapy.Spider):
@@ -8,7 +9,7 @@ class RkpassspiderSpider(scrapy.Spider):
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
 
-    for i in range(23, 24):
+    for i in range(1, 76):
         start_urls.append('http://www.rkpass.cn/tk_timu/6_553_' + str(i) + '_xuanze.html')
 
     def parse(self, response):
@@ -16,10 +17,14 @@ class RkpassspiderSpider(scrapy.Spider):
         product_id = re.findall('\((.*?)\)', response.xpath(".//script//text()").extract()[0])[0].split(',')[0].strip(
             "'")  # 该题目id 用于整理答案
         question = "".join(response.xpath(".//table/tr[2]/td/span[@class='shisi_text']//text()").extract())  # 题目
-        A = "".join("".join(response.xpath(".//table/tr[5]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
-        B = "".join("".join(response.xpath(".//table/tr[7]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
-        C = "".join("".join(response.xpath(".//table/tr[9]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
-        D = "".join("".join(response.xpath(".//table/tr[11]/td/span[@class='shisi_text']//text()").extract()).split()) # D选项
+        A = "".join(
+            "".join(response.xpath(".//table/tr[5]/td/span[@class='shisi_text']//text()").extract()).split())  # A选项
+        B = "".join(
+            "".join(response.xpath(".//table/tr[7]/td/span[@class='shisi_text']//text()").extract()).split())  # B选项
+        C = "".join(
+            "".join(response.xpath(".//table/tr[9]/td/span[@class='shisi_text']//text()").extract()).split())  # C选项
+        D = "".join(
+            "".join(response.xpath(".//table/tr[11]/td/span[@class='shisi_text']//text()").extract()).split())  # D选项
 
         questionImg = ''  # 初始化 防止插库失败
         if len(dataimg) > 0:  # 判断题目及选项中是否有图片
@@ -36,14 +41,28 @@ class RkpassspiderSpider(scrapy.Spider):
                 B = B + dataimg[2]
                 C = C + dataimg[3]
                 D = D + dataimg[4]
-        print(C)
-        print(question)
+
+        # 收集数据
+        item = RkpassItem()
+        item['question'] = question
+        item['questionImg'] = questionImg
+        item['optiona'] = A
+        item['optionb'] = B
+        item['optionc'] = C
+        item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item})
 
     def parse_detail(self, response):
+        item = response.meta['item']  # 接收上级已爬取的数据
         answer = response.xpath(".//td/span[@class='shisi_text']//text()").extract()[2].strip()  # 答案
         answerAnalysis = response.xpath(".//table/tr[3]/td//text()").extract()  # 答案解析
         answerAnalysis = "".join(answerAnalysis[3:len(answerAnalysis)])
-        print(answerAnalysis)
+
+        # 接收二级答案页面数据
+        item['answer'] = answer
+        item['answeranalysis'] = answerAnalysis
+        item['field'] = '20181'
+
+        return item
