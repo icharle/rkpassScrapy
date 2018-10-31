@@ -6,6 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
 import scrapy
+import re
 from scrapy.exceptions import DropItem
 from scrapy.pipelines.images import ImagesPipeline
 
@@ -50,12 +51,14 @@ class RkpassPipeline(object):
             self.db.rollback()
         return item
 
+
 # 题目图片下载器
 class QuestionImagePipeline(ImagesPipeline):
 
     def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
         url = request.url
-        file_name = url.split('/')[-1]
+        file_name = item['field'] + '/' + url.split('/')[-1]
         return file_name
 
     def get_media_requests(self, item, info):
@@ -70,5 +73,109 @@ class QuestionImagePipeline(ImagesPipeline):
             # raise DropItem("Item contains no images")
             return item
         else:
-            item['questionImg'] = image_path
+            item['questionImg'] = '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 选项A图片下载
+class OptionAImagePipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                 item['optiona']))
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optiona'] = 'A.' + '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 选项B图片下载
+class OptionBImagePipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                 item['optionb']))
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionb'] = 'B.' + '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 选项C图片下载
+class OptionCImagePipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                 item['optionc']))
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionc'] = 'C.' + '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 选项D图片下载
+class OptionDImagePipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                 item['optiond']))
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optiond'] = 'D.' + '/storage/images/' + "".join(image_path)
             return item
