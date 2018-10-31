@@ -65,7 +65,8 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'rkpass.pipelines.RkpassPipeline': 300,
+   'rkpass.pipelines.QuestionImagePipeline': 300,
+   'rkpass.pipelines.RkpassPipeline': 301,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -98,3 +99,6 @@ MYSQL_PASSWORD = 'root'
 
 # LOG INFO
 LOG_LEVEL = 'INFO'
+
+# 图片存储
+IMAGES_STORE = './images'

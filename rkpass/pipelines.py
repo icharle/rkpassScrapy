@@ -5,6 +5,9 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
+import scrapy
+from scrapy.exceptions import DropItem
+from scrapy.pipelines.images import ImagesPipeline
 
 
 class RkpassPipeline(object):
@@ -46,3 +49,26 @@ class RkpassPipeline(object):
             # 如果发生错误则回滚
             self.db.rollback()
         return item
+
+# 题目图片下载器
+class QuestionImagePipeline(ImagesPipeline):
+
+    def file_path(self, request, response=None, info=None):
+        url = request.url
+        file_name = url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        if item['questionImg']:
+            yield scrapy.Request(item['questionImg'], meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['questionImg'] = image_path
+            return item
