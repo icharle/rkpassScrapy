@@ -20,11 +20,22 @@ class RkpassItem(scrapy.Item):
     field = scrapy.Field()  # 考试场次 20181代表2018上半年考试
 
 
-# class rkpassAfterItem(scrapy.Item):
-#     question = scrapy.Field()  # 题目
-#     questionImg = scrapy.Field()  # 题目图片
-#     optionA = scrapy.Field()  # 题目问题
-#     optionB = scrapy.Field()  # 题目问题
-#     optionC = scrapy.Field()  # 题目问题
-#     optionD = scrapy.Field()  # 题目问题
-#     optionE = scrapy.Field()  # 题目问题
+class rkpassAfterItem(scrapy.Item):
+    question = scrapy.Field()  # 题目
+    questionImg = scrapy.Field()  # 题目图片
+    optionA = scrapy.Field()  # 题目问题
+    optionB = scrapy.Field()  # 题目问题
+    optionC = scrapy.Field()  # 题目问题
+    optionD = scrapy.Field()  # 题目问题
+    optionE = scrapy.Field()  # 题目问题
+    optionAanswer = scrapy.Field()  # 题目答案
+    optionAanswerImg = scrapy.Field()  # 图片题目答案
+    optionBanswer = scrapy.Field()  # 题目答案
+    optionBanswerImg = scrapy.Field()  # 图片题目答案
+    optionCanswer = scrapy.Field()  # 题目答案
+    optionCanswerImg = scrapy.Field()  # 图片题目答案
+    optionDanswer = scrapy.Field()  # 题目答案
+    optionDanswerImg = scrapy.Field()  # 图片题目答案
+    optionEanswer = scrapy.Field()  # 题目答案
+    optionEanswerImg = scrapy.Field()  # 图片题目答案
+    field = scrapy.Field()  # 场次
