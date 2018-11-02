@@ -65,12 +65,21 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'rkpass.pipelines.QuestionImagePipeline': 300,
-   'rkpass.pipelines.OptionAImagePipeline': 301,
-   'rkpass.pipelines.OptionBImagePipeline': 302,
-   'rkpass.pipelines.OptionCImagePipeline': 303,
-   'rkpass.pipelines.OptionDImagePipeline': 304,
-   'rkpass.pipelines.RkpassPipeline': 305,
+   # 上午下载器
+   # 'rkpass.pipelines.QuestionImagePipeline': 300,
+   # 'rkpass.pipelines.OptionAImagePipeline': 301,
+   # 'rkpass.pipelines.OptionBImagePipeline': 302,
+   # 'rkpass.pipelines.OptionCImagePipeline': 303,
+   # 'rkpass.pipelines.OptionDImagePipeline': 304,
+   # 'rkpass.pipelines.RkpassPipeline': 305,
+   #  下午下载器
+    'rkpass.pipelines.AfterQuestionImagePipeline': 300,
+    'rkpass.pipelines.optionAanswerImgPipeline': 301,
+    'rkpass.pipelines.optionBanswerImgPipeline': 302,
+    'rkpass.pipelines.optionCanswerImgPipeline': 303,
+    'rkpass.pipelines.optionDanswerImgPipeline': 304,
+    'rkpass.pipelines.optionEanswerImgPipeline': 305,
+    'rkpass.pipelines.AfterPipeline': 306,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -11,6 +11,7 @@ from scrapy.exceptions import DropItem
 from scrapy.pipelines.images import ImagesPipeline
 
 
+# 上午题库入库
 class RkpassPipeline(object):
 
     def __init__(self, host, port, database, username, password):
@@ -178,4 +179,200 @@ class OptionDImagePipeline(ImagesPipeline):
             return item
         else:
             item['optiond'] = 'D.' + '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 下午题库入库
+class AfterPipeline(object):
+    def __init__(self, host, port, database, username, password):
+        self.host = host
+        self.port = port
+        self.database = database
+        self.username = username
+        self.password = password
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            host=crawler.settings.get('MYSQL_HOST'),
+            port=crawler.settings.get('MYSQL_PORT'),
+            database=crawler.settings.get('MYSQL_DATABASE'),
+            username=crawler.settings.get('MYSQL_USERNAME'),
+            password=crawler.settings.get('MYSQL_PASSWORD'),
+        )
+
+    def open_spider(self, spider):
+        self.db = pymysql.connect(self.host, self.username, self.password, self.database, charset='utf8',
+                                  port=self.port)
+        self.cursor = self.db.cursor()
+
+    def close_spider(self, spider):
+        self.db.close()
+
+    def process_item(self, item, spider):
+        data = dict(item)
+        insert_sql = "insert into afternoon(question, questionImg, optionA, optionB, optionC, optionD, optionE, optionAanswer, optionAanswerImg, optionBanswer, optionBanswerImg, optionCanswer, optionCanswerImg, optionDanswer, optionDanswerImg, optionEanswer, optionEanswerImg, field) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        try:
+            # 执行sql语句
+            self.cursor.execute(insert_sql, tuple(data.values()))
+            # 提交到数据库执行
+            self.db.commit()
+        except:
+            # 如果发生错误则回滚
+            self.db.rollback()
+        return item
+
+
+# 题目图片下载器
+class AfterQuestionImagePipeline(ImagesPipeline):
+
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        if "".join(item['questionImg']):  # 判断题目中是否有图片 有则循环遍历list下载图片 否则直接返回空值
+            for img_item in item['questionImg']:
+                yield scrapy.Request(img_item, meta={'item': item})
+        else:
+            item['questionImg'] = "".join(item['questionImg']) # 巨坑 list不能直接入库(转成string)
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            tempimg = ''  # 对于题目多图片进行拼接合成一个字符串 (用;区分每一张图片)
+            for local_img in image_path:
+                tempimg += '/storage/images/' + local_img + ';'
+            item['questionImg'] = tempimg
+            return item
+
+
+# 问题一图片下载
+class optionAanswerImgPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(item['optionAanswerImg'])
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionAanswerImg'] = '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 问题二图片下载
+class optionBanswerImgPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(item['optionBanswerImg'])
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionBanswerImg'] = '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 问题三图片下载
+class optionCanswerImgPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(item['optionCanswerImg'])
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionCanswerImg'] = '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 问题四图片下载
+class optionDanswerImgPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(item['optionDanswerImg'])
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionDanswerImg'] = '/storage/images/' + "".join(image_path)
+            return item
+
+
+# 问题五图片下载
+class optionEanswerImgPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None):
+        item = request.meta['item']
+        url = request.url
+        file_name = item['field'] + '/' + url.split('/')[-1]
+        return file_name
+
+    def get_media_requests(self, item, info):
+        url = "".join(item['optionEanswerImg'])
+        if url:
+            yield scrapy.Request(url, meta={'item': item})
+        else:
+            return item
+
+    def item_completed(self, results, item, info):
+        image_path = [x['path'] for ok, x in results if ok]
+        if not image_path:
+            # raise DropItem("Item contains no images")
+            return item
+        else:
+            item['optionEanswerImg'] = '/storage/images/' + "".join(image_path)
             return item

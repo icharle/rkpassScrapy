@@ -10,7 +10,7 @@ class RkpassafterspiderSpider(scrapy.Spider):
     start_urls = []
 
     for i in range(1, 7):
-        start_urls.append('http://www.rkpass.cn/tk_timu/6_580_' + str(i) + '_anli.html')
+        start_urls.append('http://www.rkpass.cn/tk_timu/6_431_' + str(i) + '_anli.html')
 
     def parse(self, response):
         questionImg = response.xpath(".//span[@class='shisi_text']/img/@src").extract()  # 爬取题目中图片
@@ -69,7 +69,7 @@ class RkpassafterspiderSpider(scrapy.Spider):
         item['optionD'] = optionD
         item['optionE'] = optionE
 
-        url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=anli&answer=&paper_id=580&tihao=' + "".join(
+        url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=anli&answer=&paper_id=431&tihao=' + "".join(
             tihao) + '&cache=false'
         yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item})
 
@@ -115,6 +115,6 @@ class RkpassafterspiderSpider(scrapy.Spider):
         item['optionDanswerImg'] = optionDanswerImg
         item['optionEanswer'] = optionEanswer
         item['optionEanswerImg'] = optionEanswerImg
-        item['field'] = '20181'
+        item['field'] = '20161'
 
         return item
