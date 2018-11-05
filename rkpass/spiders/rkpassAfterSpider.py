@@ -9,7 +9,7 @@ class RkpassafterspiderSpider(scrapy.Spider):
     allowed_domains = ['www.rkpass.com']
     start_urls = []
 
-    for i in range(4, 5):
+    for i in range(1, 7):
         start_urls.append('http://www.rkpass.cn/tk_timu/6_431_' + str(i) + '_anli.html')
 
     def parse(self, response):
@@ -20,20 +20,25 @@ class RkpassafterspiderSpider(scrapy.Spider):
         question = "".join(response.xpath(".//table/tr[2]/td/span[@class='shisi_text']//text()").extract())  # 题目
 
         optionA = "".join("".join(response.xpath(".//table/tr[4]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionAP = "".join("".join(response.xpath(".//table/tr[4]/td/p/text()").extract()).split())  # tr[] 4,6,8,10   存在p标签包含情况
         optionB = "".join("".join(response.xpath(".//table/tr[6]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionBP = "".join("".join(response.xpath(".//table/tr[6]/td/p/text()").extract()).split())  # tr[] 4,6,8,10   存在p标签包含情况
         optionC = "".join("".join(response.xpath(".//table/tr[8]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionCP = "".join("".join(response.xpath(".//table/tr[8]/td/p/text()").extract()).split())  # tr[] 4,6,8,10   存在p标签包含情况
         optionD = "".join("".join(response.xpath(".//table/tr[10]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionDP = "".join("".join(response.xpath(".//table/tr[10]/td/p/text()").extract()).split())  # tr[] 4,6,8,10  存在p标签包含情况
         optionE = "".join("".join(response.xpath(".//table/tr[12]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionEP = "".join("".join(response.xpath(".//table/tr[12]/td/p/text()").extract()).split())  # tr[] 4,6,8,10  存在p标签包含情况
 
         # 收集数据
         item = rkpassAfterItem()
         item['question'] = question
         item['questionImg'] = questionImg
-        item['optionA'] = optionA
-        item['optionB'] = optionB
-        item['optionC'] = optionC
-        item['optionD'] = optionD
-        item['optionE'] = optionE
+        item['optionA'] = optionA if optionA else optionAP
+        item['optionB'] = optionB if optionB else optionBP
+        item['optionC'] = optionC if optionC else optionCP
+        item['optionD'] = optionD if optionD else optionDP
+        item['optionE'] = optionE if optionE else optionEP
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=anli&answer=&paper_id=431&tihao=' + "".join(
             tihao) + '&cache=false'
@@ -83,5 +88,4 @@ class RkpassafterspiderSpider(scrapy.Spider):
         item['optionEanswerImg'] = optionEanswerImg
         item['field'] = '20161'
 
-        print(item)
-        # return item
+        return item
