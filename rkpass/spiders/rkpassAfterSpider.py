@@ -9,7 +9,7 @@ class RkpassafterspiderSpider(scrapy.Spider):
     allowed_domains = ['www.rkpass.com']
     start_urls = []
 
-    for i in range(1, 7):
+    for i in range(4, 5):
         start_urls.append('http://www.rkpass.cn/tk_timu/6_431_' + str(i) + '_anli.html')
 
     def parse(self, response):
@@ -56,19 +56,19 @@ class RkpassafterspiderSpider(scrapy.Spider):
         for i in range(1, len(dataInfo)):
             if i == 1:
                 optionAanswer = "".join(re.sub('</?\w+[^>]*>', '', dataInfo[i])).strip()  # 答案中的文字
-                optionAanswerImg = "".join(re.findall('src="(.*?)"', dataInfo[i]))  # 答案中的图片
+                optionAanswerImg = re.findall('src="(.*?)"', dataInfo[i])  # 答案中的图片
             elif i == 2:
                 optionBanswer = re.sub('</?\w+[^>]*>', '', dataInfo[i])  # 答案中的文字
-                optionBanswerImg = "".join(re.findall('src="(.*?)"', dataInfo[i]))  # 答案中的图片
+                optionBanswerImg = re.findall('src="(.*?)"', dataInfo[i])  # 答案中的图片
             elif i == 3:
                 optionCanswer = re.sub('</?\w+[^>]*>', '', dataInfo[i])  # 答案中的文字
-                optionCanswerImg = "".join(re.findall('src="(.*?)"', dataInfo[i]))  # 答案中的图片
+                optionCanswerImg = re.findall('src="(.*?)"', dataInfo[i])  # 答案中的图片
             elif i == 4:
                 optionDanswer = re.sub('</?\w+[^>]*>', '', dataInfo[i])  # 答案中的文字
-                optionDanswerImg = "".join(re.findall('src="(.*?)"', dataInfo[i]))  # 答案中的图片
+                optionDanswerImg = re.findall('src="(.*?)"', dataInfo[i])  # 答案中的图片
             elif i == 5:
                 optionEanswer = re.sub('</?\w+[^>]*>', '', dataInfo[i])  # 答案中的文字
-                optionEanswerImg = "".join(re.findall('src="(.*?)"', dataInfo[i]))  # 答案中的图片
+                optionEanswerImg = re.findall('src="(.*?)"', dataInfo[i])  # 答案中的图片
 
         # 接收二级答案页面数据
         item['optionAanswer'] = optionAanswer
@@ -83,4 +83,5 @@ class RkpassafterspiderSpider(scrapy.Spider):
         item['optionEanswerImg'] = optionEanswerImg
         item['field'] = '20161'
 
-        return item
+        print(item)
+        # return item

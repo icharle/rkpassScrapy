@@ -237,7 +237,7 @@ class AfterQuestionImagePipeline(ImagesPipeline):
             for img_item in item['questionImg']:
                 yield scrapy.Request(img_item, meta={'item': item})
         else:
-            item['questionImg'] = "".join(item['questionImg']) # 巨坑 list不能直接入库(转成string)
+            item['questionImg'] = "".join(item['questionImg'])  # 巨坑 list不能直接入库(转成string)
             return item
 
     def item_completed(self, results, item, info):
@@ -262,10 +262,11 @@ class optionAanswerImgPipeline(ImagesPipeline):
         return file_name
 
     def get_media_requests(self, item, info):
-        url = "".join(item['optionAanswerImg'])
-        if url:
-            yield scrapy.Request(url, meta={'item': item})
+        if "".join(item['optionAanswerImg']):
+            for img_item in item['optionAanswerImg']:
+                yield scrapy.Request(img_item, meta={'item': item})
         else:
+            item['optionAanswerImg'] = "".join(item['optionAanswerImg'])
             return item
 
     def item_completed(self, results, item, info):
@@ -274,7 +275,10 @@ class optionAanswerImgPipeline(ImagesPipeline):
             # raise DropItem("Item contains no images")
             return item
         else:
-            item['optionAanswerImg'] = '/storage/images/' + "".join(image_path)
+            tempimg = ''  # 对于题目多图片进行拼接合成一个字符串 (用;区分每一张图片)
+            for local_img in image_path:
+                tempimg += '/storage/images/' + local_img + ';'
+            item['optionAanswerImg'] = tempimg
             return item
 
 
@@ -287,10 +291,11 @@ class optionBanswerImgPipeline(ImagesPipeline):
         return file_name
 
     def get_media_requests(self, item, info):
-        url = "".join(item['optionBanswerImg'])
-        if url:
-            yield scrapy.Request(url, meta={'item': item})
+        if "".join(item['optionBanswerImg']):
+            for img_item in item['optionBanswerImg']:
+                yield scrapy.Request(img_item, meta={'item': item})
         else:
+            item['optionBanswerImg'] = "".join(item['optionBanswerImg'])
             return item
 
     def item_completed(self, results, item, info):
@@ -299,7 +304,10 @@ class optionBanswerImgPipeline(ImagesPipeline):
             # raise DropItem("Item contains no images")
             return item
         else:
-            item['optionBanswerImg'] = '/storage/images/' + "".join(image_path)
+            tempimg = ''  # 对于题目多图片进行拼接合成一个字符串 (用;区分每一张图片)
+            for local_img in image_path:
+                tempimg += '/storage/images/' + local_img + ';'
+            item['optionBanswerImg'] = tempimg
             return item
 
 
@@ -312,10 +320,11 @@ class optionCanswerImgPipeline(ImagesPipeline):
         return file_name
 
     def get_media_requests(self, item, info):
-        url = "".join(item['optionCanswerImg'])
-        if url:
-            yield scrapy.Request(url, meta={'item': item})
+        if "".join(item['optionCanswerImg']):
+            for img_item in item['optionCanswerImg']:
+                yield scrapy.Request(img_item, meta={'item': item})
         else:
+            item['optionCanswerImg'] = "".join(item['optionCanswerImg'])
             return item
 
     def item_completed(self, results, item, info):
@@ -324,7 +333,10 @@ class optionCanswerImgPipeline(ImagesPipeline):
             # raise DropItem("Item contains no images")
             return item
         else:
-            item['optionCanswerImg'] = '/storage/images/' + "".join(image_path)
+            tempimg = ''  # 对于题目多图片进行拼接合成一个字符串 (用;区分每一张图片)
+            for local_img in image_path:
+                tempimg += '/storage/images/' + local_img + ';'
+            item['optionCanswerImg'] = tempimg
             return item
 
 
@@ -337,10 +349,11 @@ class optionDanswerImgPipeline(ImagesPipeline):
         return file_name
 
     def get_media_requests(self, item, info):
-        url = "".join(item['optionDanswerImg'])
-        if url:
-            yield scrapy.Request(url, meta={'item': item})
+        if "".join(item['optionDanswerImg']):
+            for img_item in item['optionDanswerImg']:
+                yield scrapy.Request(img_item, meta={'item': item})
         else:
+            item['optionDanswerImg'] = "".join(item['optionDanswerImg'])
             return item
 
     def item_completed(self, results, item, info):
@@ -349,7 +362,10 @@ class optionDanswerImgPipeline(ImagesPipeline):
             # raise DropItem("Item contains no images")
             return item
         else:
-            item['optionDanswerImg'] = '/storage/images/' + "".join(image_path)
+            tempimg = ''  # 对于题目多图片进行拼接合成一个字符串 (用;区分每一张图片)
+            for local_img in image_path:
+                tempimg += '/storage/images/' + local_img + ';'
+            item['optionDanswerImg'] = tempimg
             return item
 
 
@@ -362,10 +378,11 @@ class optionEanswerImgPipeline(ImagesPipeline):
         return file_name
 
     def get_media_requests(self, item, info):
-        url = "".join(item['optionEanswerImg'])
-        if url:
-            yield scrapy.Request(url, meta={'item': item})
+        if "".join(item['optionEanswerImg']):
+            for img_item in item['optionEanswerImg']:
+                yield scrapy.Request(img_item, meta={'item': item})
         else:
+            item['optionEanswerImg'] = "".join(item['optionEanswerImg'])
             return item
 
     def item_completed(self, results, item, info):
@@ -374,5 +391,8 @@ class optionEanswerImgPipeline(ImagesPipeline):
             # raise DropItem("Item contains no images")
             return item
         else:
-            item['optionEanswerImg'] = '/storage/images/' + "".join(image_path)
+            tempimg = ''  # 对于题目多图片进行拼接合成一个字符串 (用;区分每一张图片)
+            for local_img in image_path:
+                tempimg += '/storage/images/' + local_img + ';'
+            item['optionEanswerImg'] = tempimg
             return item
