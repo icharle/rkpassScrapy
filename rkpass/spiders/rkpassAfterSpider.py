@@ -19,45 +19,11 @@ class RkpassafterspiderSpider(scrapy.Spider):
         tihao = re.findall('↓第(.*?)题', "".join(response.xpath(".//span[@class='hui']//text()").extract()))  # 题号
         question = "".join(response.xpath(".//table/tr[2]/td/span[@class='shisi_text']//text()").extract())  # 题目
 
-        wenti = "".join("".join(response.xpath(".//table/tr/td/text()").extract()).split())  # tr[] 4,6,8,10
-        wenti = re.split('(\（[0-9]*分\）)', wenti)  # 分割问题
-        if len(wenti) > 1:
-            if len(wenti) > 9:  # 5道问题情况
-                optionA = "".join(wenti[0:3])
-                optionB = "".join(wenti[3:5])
-                optionC = "".join(wenti[5:7])
-                optionD = "".join(wenti[7:9])
-                optionE = "".join(wenti[9:11])
-            elif len(wenti) > 7:  # 4道问题情况
-                optionA = "".join(wenti[0:3])
-                optionB = "".join(wenti[3:5])
-                optionC = "".join(wenti[5:7])
-                optionD = "".join(wenti[7:9])
-                optionE = ''
-            elif len(wenti) > 5:  # 3道问题情况
-                optionA = "".join(wenti[0:3])
-                optionB = "".join(wenti[3:5])
-                optionC = "".join(wenti[5:7])
-                optionD = ''
-                optionE = ''
-            elif len(wenti) > 3:  # 2道问题情况
-                optionA = "".join(wenti[0:3])
-                optionB = "".join(wenti[3:5])
-                optionC = ''
-                optionD = ''
-                optionE = ''
-            elif len(wenti) > 1:  # 1道问题情况
-                optionA = "".join(wenti[0:3])
-                optionB = ''
-                optionC = ''
-                optionD = ''
-                optionE = ''
-        else:  # 无题目情况(针对下午题最后两题)
-            optionA = ''
-            optionB = ''
-            optionC = ''
-            optionD = ''
-            optionE = ''
+        optionA = "".join("".join(response.xpath(".//table/tr[4]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionB = "".join("".join(response.xpath(".//table/tr[6]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionC = "".join("".join(response.xpath(".//table/tr[8]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionD = "".join("".join(response.xpath(".//table/tr[10]/td/text()").extract()).split())  # tr[] 4,6,8,10
+        optionE = "".join("".join(response.xpath(".//table/tr[12]/td/text()").extract()).split())  # tr[] 4,6,8,10
 
         # 收集数据
         item = rkpassAfterItem()
