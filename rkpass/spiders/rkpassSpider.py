@@ -8,11 +8,19 @@ class RkpassspiderSpider(scrapy.Spider):
     name = 'rkpassSpider'
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
+    paperId_list = ['553', '519', '485', '463', '420', '378', '359', '305', '304', '91', '89', '72', '74', '76', '78',
+                    '80', '82', '84', '88']   # 试卷的所有ID
+    field_list = ['20181', '20172', '20171', '20162', '20161', '20152', '20151', '20142', '20141', '20132', '20131',
+                  '20122', '20121', '20112', '20111', '20102', '20101', '20092', '20091']    # 跟上行试卷所有ID对应考试场次
 
-    for i in range(1, 76):
-        start_urls.append('http://www.rkpass.cn/tk_timu/6_553_' + str(i) + '_xuanze.html')
+    for j in range(len(paperId_list)):
+        for i in range(1, 76):
+            start_urls.append(
+                'http://www.rkpass.cn/tk_timu/6_' + str(paperId_list[j]) + '_' + str(i) + '_xuanze.html?field=' +
+                field_list[j])
 
     def parse(self, response):
+        field = str(response.url).strip().split("field=")[-1]  # 区别场次 20181表示2018年上半年
         dataimg = response.xpath(".//span[@class='shisi_text']/img[last()]/@src").extract()  # 爬取题目及选项中图片
         product_id = re.findall('\((.*?)\)', response.xpath(".//script//text()").extract()[0])[0].split(',')[0].strip(
             "'")  # 该题目id 用于整理答案
@@ -52,9 +60,10 @@ class RkpassspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field})
 
     def parse_detail(self, response):
+        field = response.meta['field']  # 接收当前考试场次
         item = response.meta['item']  # 接收上级已爬取的数据
         answer = response.xpath(".//td/span[@class='shisi_text']//text()").extract()[2].strip()  # 答案
         answerAnalysis = response.xpath(".//table/tr[3]/td//text()").extract()  # 答案解析
@@ -63,6 +72,6 @@ class RkpassspiderSpider(scrapy.Spider):
         # 接收二级答案页面数据
         item['answer'] = answer
         item['answeranalysis'] = answerAnalysis
-        item['field'] = '20181'
+        item['field'] = field
 
         return item
