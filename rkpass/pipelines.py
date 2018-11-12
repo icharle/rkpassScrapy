@@ -11,7 +11,7 @@ from scrapy.exceptions import DropItem
 from scrapy.pipelines.images import ImagesPipeline
 
 
-# 软件设计师上午题库入库
+# 上午题库入库
 class RkpassPipeline(object):
 
     def __init__(self, host, port, database, username, password):
@@ -182,7 +182,7 @@ class OptionDImagePipeline(ImagesPipeline):
             return item
 
 
-# 软件设计师下午题库入库
+# 下午题库入库
 class AfterPipeline(object):
     def __init__(self, host, port, database, username, password):
         self.host = host

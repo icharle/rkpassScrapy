@@ -7,7 +7,7 @@
 
 import scrapy
 
-# 软件设计师上午题
+
 class RkpassItem(scrapy.Item):
     question = scrapy.Field()  # 题目
     questionImg = scrapy.Field()  # 题目图片
@@ -19,7 +19,7 @@ class RkpassItem(scrapy.Item):
     answeranalysis = scrapy.Field()  # 答案解析
     field = scrapy.Field()  # 考试场次 20181代表2018上半年考试
 
-# 软件设计师下午题
+
 class rkpassAfterItem(scrapy.Item):
     question = scrapy.Field()  # 题目
     questionImg = scrapy.Field()  # 题目图片
