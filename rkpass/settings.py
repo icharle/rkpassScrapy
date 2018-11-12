@@ -71,7 +71,8 @@ ITEM_PIPELINES = {
    'rkpass.pipelines.OptionBImagePipeline': 302,
    'rkpass.pipelines.OptionCImagePipeline': 303,
    'rkpass.pipelines.OptionDImagePipeline': 304,
-   'rkpass.pipelines.xxMorningPipeline': 305, # 信息系统监理师
+   'rkpass.pipelines.sjkMorningPipeline': 305, # 数据库系统工程师
+   # 'rkpass.pipelines.xxMorningPipeline': 305, # 信息系统监理师
    # 'rkpass.pipelines.wlMorningPipeline': 305, # 网络工程师
    # 'rkpass.pipelines.RkpassPipeline': 305,  # 软件设计师
 
