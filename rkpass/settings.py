@@ -3,6 +3,7 @@
 # Scrapy settings for rkpass project
 #
 # For simplicity, this file contains only settings considered important or
+
 # commonly used. You can find more settings consulting the documentation:
 #
 #     https://doc.scrapy.org/en/latest/topics/settings.html
@@ -71,7 +72,8 @@ ITEM_PIPELINES = {
    'rkpass.pipelines.OptionBImagePipeline': 302,
    'rkpass.pipelines.OptionCImagePipeline': 303,
    'rkpass.pipelines.OptionDImagePipeline': 304,
-   'rkpass.pipelines.dzswMorningPipeline': 305, # 电子商务设计师
+   'rkpass.pipelines.mediaMorningPipeline': 305, # 多媒体应用设计师
+   # 'rkpass.pipelines.dzswMorningPipeline': 305, # 电子商务设计师
    # 'rkpass.pipelines.qrsMorningPipeline': 305, # 嵌入式系统设计师
    # 'rkpass.pipelines.rjpcsMorningPipeline': 305, # 软件评测师
    # 'rkpass.pipelines.sjkMorningPipeline': 305, # 数据库系统工程师
