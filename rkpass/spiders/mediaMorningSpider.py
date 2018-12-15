@@ -3,6 +3,7 @@ import scrapy
 import re
 from rkpass.items import mediaMorningItem
 
+# 多媒体应用设计师上午题
 class MediamorningspiderSpider(scrapy.Spider):
     name = 'mediaMorningSpider'
     allowed_domains = ['www.rkpass.cn']

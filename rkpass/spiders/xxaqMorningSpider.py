@@ -3,6 +3,7 @@ import scrapy
 import re
 from rkpass.items import xxaqMorningItem
 
+# 信息安全工程师上午题
 class XxaqmorningspiderSpider(scrapy.Spider):
     name = 'xxaqMorningSpider'
     allowed_domains = ['www.rkpass.cn']

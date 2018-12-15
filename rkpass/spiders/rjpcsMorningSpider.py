@@ -3,13 +3,13 @@ import scrapy
 import re
 from rkpass.items import rjpcsMorningItem
 
-
+# 软件评测师上午题
 class RjpcsmorningspiderSpider(scrapy.Spider):
     name = 'rjpcsMorningSpider'
     allowed_domains = ['www.rkpass.cn','www.tsinghua.edu.cn']
     start_urls = []
-    paperId_list = ['543', '482', '396', '303', '224', '198', '196', '194', '192']  # 试卷的所有ID
-    field_list = ['20172', '20162', '20152', '20142', '20132', '20122', '20112', '20102', '20092', ]  # 跟上行试卷所有ID对应考试场次
+    paperId_list = ['606', '543', '482', '396', '303', '224', '198', '196', '194', '192']  # 试卷的所有ID
+    field_list = ['20182', '20172', '20162', '20152', '20142', '20132', '20122', '20112', '20102', '20092', ]  # 跟上行试卷所有ID对应考试场次
 
     for j in range(len(paperId_list)):
         for i in range(1, 76):
