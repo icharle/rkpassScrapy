@@ -17,10 +17,12 @@ class XxmorningspiderSpider(scrapy.Spider):
         for i in range(1, 76):
             start_urls.append(
                 'http://www.rkpass.cn/tk_timu/8_' + str(paperId_list[j]) + '_' + str(i) + '_xuanze.html?field=' +
-                field_list[j])
+                field_list[j] + '&questionNum=' + str(i))
 
     def parse(self, response):
-        field = str(response.url).strip().split("field=")[-1]  # 区别场次 20181表示2018年上半年
+        questionNum = str(response.url).strip().split("questionNum=")[-1]  # 题号 scrapy运行插库顺序不一致问题
+        field = (str(response.url).strip().split("field=")[-1]).split("&")[0]  # 区别场次 20181表示2018年上半年
+        knowledgeTwo = response.xpath(".//span[@class='red']//text()").extract()[0]  # 知识点(二级分类)
         dataimg = response.xpath(".//span[@class='shisi_text']/img[last()]/@src").extract()  # 爬取题目及选项中图片
         product_id = re.findall('\((.*?)\)', response.xpath(".//script//text()").extract()[0])[0].split(',')[0].strip(
             "'")  # 该题目id 用于整理答案
@@ -50,6 +52,31 @@ class XxmorningspiderSpider(scrapy.Spider):
                 C = C + dataimg[3]
                 D = D + dataimg[4]
 
+        # 处理分类
+        info = {
+            '信息系统工程监理概念': '信息系统工程监理知识',
+            '信息系统工程监理依据': '信息系统工程监理知识',
+            '监理单位的组织建设': '信息系统工程监理知识',
+            '监理工作的组织和规划': '信息系统工程监理知识',
+            '质量控制': '信息系统工程监理知识',
+            '进度控制': '信息系统工程监理知识',
+            '投资控制': '信息系统工程监理知识',
+            '变更控制': '信息系统工程监理知识',
+            '合同管理': '信息系统工程监理知识',
+            '安全管理': '信息系统工程监理知识',
+            '信息管理': '信息系统工程监理知识',
+            '沟通协调': '信息系统工程监理知识',
+            '信息系统监理师职业道德要求': '信息系统工程监理知识',
+            '信息系统建设': '信息系统工程技术知识',
+            '计算机技术知识与网络知识': '信息系统工程技术知识',
+            '信息网络系统': '信息系统工程技术知识',
+            '软件与软件工程知识': '信息系统工程技术知识',
+            '专业英语': '专业英语',
+            '信息工程项目管理知识': '项目管理基础知识',
+            '项目管理基础知识': '项目管理基础知识',
+        }
+        knowledgeOne = info[knowledgeTwo]  # 知识点一级分类
+
         # 收集数据
         item = xxMorningItem()
         item['question'] = question
@@ -60,9 +87,12 @@ class XxmorningspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field, 'questionNum': questionNum, 'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
 
     def parse_detail(self, response):
+        knowledgeOne = response.meta['knowledgeOne']  # 接收当前题目一级分类
+        knowledgeTwo = response.meta['knowledgeTwo']  # 接收当前题目二级分类
+        questionNum = response.meta['questionNum']  # 接收当前题目号
         field = response.meta['field']  # 接收当前考试场次
         item = response.meta['item']  # 接收上级已爬取的数据
         answer = response.xpath(".//td/span[@class='shisi_text']//text()").extract()[2].strip()  # 答案
@@ -73,5 +103,8 @@ class XxmorningspiderSpider(scrapy.Spider):
         item['answer'] = answer
         item['answeranalysis'] = answerAnalysis
         item['field'] = field
+        item['questionNum'] = questionNum
+        item['knowledgeOne'] = knowledgeOne
+        item['knowledgeTwo'] = knowledgeTwo
 
         return item

@@ -468,7 +468,7 @@ class xxMorningPipeline(object):
 
     def process_item(self, item, spider):
         data = dict(item)
-        insert_sql = "insert into xx_morning(question, questionImg, optiona, optionb, optionc, optiond, answer, answeranalysis, field) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        insert_sql = "insert into xx_morning(question, questionImg, optiona, optionb, optionc, optiond, answer, answeranalysis, field, questionNum, knowledgeOne, knowledgeTwo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         try:
             # 执行sql语句
             self.cursor.execute(insert_sql, tuple(data.values()))
