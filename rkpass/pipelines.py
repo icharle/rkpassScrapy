@@ -890,7 +890,7 @@ class wlghMorningPipeline(object):
         return item
 
 # 系统架构设计师上午题库入库
-class xtgjMorningPipeline(object):
+class xtjgMorningPipeline(object):
 
     def __init__(self, host, port, database, username, password):
         self.host = host
@@ -919,7 +919,7 @@ class xtgjMorningPipeline(object):
 
     def process_item(self, item, spider):
         data = dict(item)
-        insert_sql = "insert into xtjg_morning(question, questionImg, optiona, optionb, optionc, optiond, answer, answeranalysis, field) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        insert_sql = "insert into xtjg_morning(question, questionImg, optiona, optionb, optionc, optiond, answer, answeranalysis, field, questionNum, knowledgeOne, knowledgeTwo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         try:
             # 执行sql语句
             self.cursor.execute(insert_sql, tuple(data.values()))
