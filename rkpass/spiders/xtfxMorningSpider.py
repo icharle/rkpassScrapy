@@ -16,10 +16,14 @@ class XtfxmorningspiderSpider(scrapy.Spider):
         for i in range(1, 76):
             start_urls.append(
                 'http://www.rkpass.cn/tk_timu/3_' + str(paperId_list[j]) + '_' + str(i) + '_xuanze.html?field=' +
-                field_list[j])
+                field_list[j] + '&questionNum=' + str(i))
 
     def parse(self, response):
-        field = str(response.url).strip().split("field=")[-1]  # 区别场次 20181表示2018年上半年
+        questionNum = str(response.url).strip().split("questionNum=")[-1]  # 题号 scrapy运行插库顺序不一致问题
+        field = (str(response.url).strip().split("field=")[-1]).split("&")[0]  # 区别场次 20181表示2018年上半年
+        knowledgeTwo = response.xpath(".//span[@class='red']//text()").extract()  # 知识点(二级分类)
+        # 针对题库无分类处理
+        knowledgeTwo = knowledgeTwo[0] if list(knowledgeTwo) else ""
         dataimg = response.xpath(".//span[@class='shisi_text']/img[last()]/@src").extract()  # 爬取题目及选项中图片
         product_id = re.findall('\((.*?)\)', response.xpath(".//script//text()").extract()[0])[0].split(',')[0].strip(
             "'")  # 该题目id 用于整理答案
@@ -49,6 +53,9 @@ class XtfxmorningspiderSpider(scrapy.Spider):
                 C = C + dataimg[3]
                 D = D + dataimg[4]
 
+        # 处理分类
+        # 特殊情况 题目上即为一级分类(该题库无知识点分类)
+        knowledgeOne = knowledgeTwo  # 知识点一级分类
         # 收集数据
         item = xtfxMorningItem()
         item['question'] = question
@@ -59,9 +66,12 @@ class XtfxmorningspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field, 'questionNum': questionNum, 'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
 
     def parse_detail(self, response):
+        knowledgeOne = response.meta['knowledgeOne']  # 接收当前题目一级分类
+        knowledgeTwo = response.meta['knowledgeTwo']  # 接收当前题目二级分类
+        questionNum = response.meta['questionNum']  # 接收当前题目号
         field = response.meta['field']  # 接收当前考试场次
         item = response.meta['item']  # 接收上级已爬取的数据
         answer = response.xpath(".//td/span[@class='shisi_text']//text()").extract()[2].strip()  # 答案
@@ -72,5 +82,8 @@ class XtfxmorningspiderSpider(scrapy.Spider):
         item['answer'] = answer
         item['answeranalysis'] = answerAnalysis
         item['field'] = field
+        item['questionNum'] = questionNum
+        item['knowledgeOne'] = knowledgeOne
+        item['knowledgeTwo'] = knowledgeTwo
 
         return item
