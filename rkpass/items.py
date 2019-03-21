@@ -163,7 +163,7 @@ class xxxtMorningItem(scrapy.Item):
     knowledgeOne = scrapy.Field()  # 当前题目一级分类
     knowledgeTwo = scrapy.Field()  # 当前题目二级分类
 
-# 信息系统管理工程师上午题
+# 信息安全工程师上午题
 class xxaqMorningItem(scrapy.Item):
     question = scrapy.Field()  # 题目
     questionImg = scrapy.Field()  # 题目图片
@@ -174,6 +174,9 @@ class xxaqMorningItem(scrapy.Item):
     answer = scrapy.Field()  # 答案
     answeranalysis = scrapy.Field()  # 答案解析
     field = scrapy.Field()  # 考试场次 20181代表2018上半年考试
+    questionNum = scrapy.Field()  # 题号
+    knowledgeOne = scrapy.Field()  # 当前题目一级分类
+    knowledgeTwo = scrapy.Field()  # 当前题目二级分类
 
 # 系统集成项目管理工程师上午题
 class xtjcMorningItem(scrapy.Item):

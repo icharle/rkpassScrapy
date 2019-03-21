@@ -78,8 +78,8 @@ ITEM_PIPELINES = {
    # 'rkpass.pipelines.wlghMorningPipeline': 305, # 网络规划设计师
    # 'rkpass.pipelines.xtghMorningPipeline': 305, # 系统规划与管理师
    # 'rkpass.pipelines.xtjcMorningPipeline': 305, # 系统集成项目管理工程师
-   # 'rkpass.pipelines.xxaqMorningPipeline': 305, # 信息安全工程师
-   'rkpass.pipelines.xxxtMorningPipeline': 305, # 信息系统管理工程师
+   'rkpass.pipelines.xxaqMorningPipeline': 305, # 信息安全工程师
+   # 'rkpass.pipelines.xxxtMorningPipeline': 305, # 信息系统管理工程师
    # 'rkpass.pipelines.mediaMorningPipeline': 305, # 多媒体应用设计师
    # 'rkpass.pipelines.dzswMorningPipeline': 305, # 电子商务设计师
    # 'rkpass.pipelines.qrsMorningPipeline': 305, # 嵌入式系统设计师
