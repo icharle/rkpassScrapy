@@ -114,6 +114,9 @@ class qrsMorningItem(scrapy.Item):
     answer = scrapy.Field()  # 答案
     answeranalysis = scrapy.Field()  # 答案解析
     field = scrapy.Field()  # 考试场次 20181代表2018上半年考试
+    questionNum = scrapy.Field()  # 题号
+    knowledgeOne = scrapy.Field()  # 当前题目一级分类
+    knowledgeTwo = scrapy.Field()  # 当前题目二级分类
 
 # 电子商务设计师上午题
 class dzswMorningItem(scrapy.Item):
