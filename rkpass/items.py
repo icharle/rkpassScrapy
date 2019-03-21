@@ -283,3 +283,18 @@ class cxyMorningItem(scrapy.Item):
     questionNum = scrapy.Field()  # 题号
     knowledgeOne = scrapy.Field()  # 当前题目一级分类
     knowledgeTwo = scrapy.Field()  # 当前题目二级分类
+
+# 信息处理技术员上午题
+class xxclMorningItem(scrapy.Item):
+    question = scrapy.Field()  # 题目
+    questionImg = scrapy.Field()  # 题目图片
+    optiona = scrapy.Field()  # 选项A
+    optionb = scrapy.Field()  # 选项B
+    optionc = scrapy.Field()  # 选项C
+    optiond = scrapy.Field()  # 选项D
+    answer = scrapy.Field()  # 答案
+    answeranalysis = scrapy.Field()  # 答案解析
+    field = scrapy.Field()  # 考试场次 20181代表2018上半年考试
+    questionNum = scrapy.Field()  # 题号
+    knowledgeOne = scrapy.Field()  # 当前题目一级分类
+    knowledgeTwo = scrapy.Field()  # 当前题目二级分类
