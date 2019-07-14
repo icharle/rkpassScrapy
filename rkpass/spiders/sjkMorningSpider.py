@@ -3,13 +3,14 @@ import scrapy
 import re
 from rkpass.items import sjkMorningItem
 
+
 # 数据库系统工程师上午题
 class SjkmorningspiderSpider(scrapy.Spider):
     name = 'sjkMorningSpider'
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
-    paperId_list = ['572', '504', '435', '351', '306', '222', '220', '190', '188', '186']  # 试卷的所有ID
-    field_list = ['20181', '20171', '20161', '20151', '20141', '20131',
+    paperId_list = ['633', '572', '504', '435', '351', '306', '222', '220', '190', '188', '186']  # 试卷的所有ID
+    field_list = ['20191', '20181', '20171', '20161', '20151', '20141', '20131',
                   '20121', '20111', '20101', '20091']  # 跟上行试卷所有ID对应考试场次
 
     for j in range(len(paperId_list)):
@@ -21,7 +22,11 @@ class SjkmorningspiderSpider(scrapy.Spider):
     def parse(self, response):
         questionNum = str(response.url).strip().split("questionNum=")[-1]  # 题号 scrapy运行插库顺序不一致问题
         field = (str(response.url).strip().split("field=")[-1]).split("&")[0]  # 区别场次 20181表示2018年上半年
-        knowledgeTwo = response.xpath(".//span[@class='red']//text()").extract()[0]  # 知识点(二级分类)
+        # 知识点(二级分类)
+        if (response.xpath(".//span[@class='red']//text()").extract()):
+            knowledgeTwo = response.xpath(".//span[@class='red']//text()").extract()[0]
+        else:
+            knowledgeTwo = "暂无分类"
         dataimg = response.xpath(".//span[@class='shisi_text']/img[last()]/@src").extract()  # 爬取题目及选项中图片
         product_id = re.findall('\((.*?)\)', response.xpath(".//script//text()").extract()[0])[0].split(',')[0].strip(
             "'")  # 该题目id 用于整理答案
@@ -65,7 +70,9 @@ class SjkmorningspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field, 'questionNum': questionNum, 'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True,
+                             meta={'item': item, 'field': field, 'questionNum': questionNum,
+                                   'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
 
     def parse_detail(self, response):
         knowledgeOne = response.meta['knowledgeOne']  # 接收当前题目一级分类

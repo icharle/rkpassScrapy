@@ -3,13 +3,17 @@ import scrapy
 import re
 from rkpass.items import xtxtxmMorningItem
 
+
 # 信息系统项目管理师上午题
 class XxxtxmmorningspiderSpider(scrapy.Spider):
     name = 'xxxtxmMorningSpider'
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
-    paperId_list = ['593', '552', '524', '489', '457', '412', '373', '344', '325', '128', '25', '1', '11', '10', '9', '8', '7', '6', '5', '4', '3']  # 试卷的所有ID
-    field_list = ['20182', '20181','20172','20171','20162','20161','20152','20151','20142','20141','20132','20131','20122','20121','20112','20111','20102','20101','20092','20091','20082']  # 跟上行试卷所有ID对应考试场次
+    paperId_list = ['619', '593', '552', '524', '489', '457', '412', '373', '344', '325', '128', '25', '1', '11', '10',
+                    '9', '8', '7', '6', '5', '4', '3']  # 试卷的所有ID
+    field_list = ['20191', '20182', '20181', '20172', '20171', '20162', '20161', '20152', '20151', '20142', '20141',
+                  '20132', '20131', '20122', '20121', '20112', '20111', '20102', '20101', '20092', '20091',
+                  '20082']  # 跟上行试卷所有ID对应考试场次
 
     for j in range(len(paperId_list)):
         for i in range(1, 76):
@@ -121,7 +125,9 @@ class XxxtxmmorningspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field, 'questionNum': questionNum, 'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True,
+                             meta={'item': item, 'field': field, 'questionNum': questionNum,
+                                   'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
 
     def parse_detail(self, response):
         knowledgeOne = response.meta['knowledgeOne']  # 接收当前题目一级分类

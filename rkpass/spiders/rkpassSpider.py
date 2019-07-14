@@ -3,15 +3,18 @@ import scrapy
 import re
 from rkpass.items import RkpassItem
 
+
 # 软件设计师上午题
 class RkpassspiderSpider(scrapy.Spider):
     name = 'rkpassSpider'
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
-    paperId_list = ['592', '553', '519', '485', '463', '420', '378', '359', '305', '304', '91', '89', '72', '74', '76', '78',
-                    '80', '82', '84', '88']   # 试卷的所有ID
-    field_list = ['20182', '20181', '20172', '20171', '20162', '20161', '20152', '20151', '20142', '20141', '20132', '20131',
-                  '20122', '20121', '20112', '20111', '20102', '20101', '20092', '20091']    # 跟上行试卷所有ID对应考试场次
+    paperId_list = ['618', '592', '553', '519', '485', '463', '420', '378', '359', '305', '304', '91', '89', '72', '74',
+                    '76', '78',
+                    '80', '82', '84', '88']  # 试卷的所有ID
+    field_list = ['20191', '20182', '20181', '20172', '20171', '20162', '20161', '20152', '20151', '20142', '20141',
+                  '20132', '20131',
+                  '20122', '20121', '20112', '20111', '20102', '20101', '20092', '20091']  # 跟上行试卷所有ID对应考试场次
 
     for j in range(len(paperId_list)):
         for i in range(1, 76):
@@ -125,7 +128,9 @@ class RkpassspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field, 'questionNum': questionNum, 'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True,
+                             meta={'item': item, 'field': field, 'questionNum': questionNum,
+                                   'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
 
     def parse_detail(self, response):
         knowledgeOne = response.meta['knowledgeOne']  # 接收当前题目一级分类

@@ -8,8 +8,9 @@ class XxxtmorningspiderSpider(scrapy.Spider):
     name = 'xxxtMorningSpider'
     allowed_domains = ['www.rkpass.cn']
     start_urls = []
-    paperId_list = ['569', '500', '427', '350', '310', '261', '260', '259', '257']  # 试卷的所有ID
-    field_list = ['20181', '20171', '20161', '20151', '20141', '20131', '20121', '20111', '20092']  # 跟上行试卷所有ID对应考试场次
+    paperId_list = ['629', '569', '500', '427', '350', '310', '261', '260', '259', '257']  # 试卷的所有ID
+    field_list = ['20191', '20181', '20171', '20161', '20151', '20141', '20131', '20121', '20111',
+                  '20092']  # 跟上行试卷所有ID对应考试场次
 
     for j in range(len(paperId_list)):
         for i in range(1, 76):
@@ -50,8 +51,8 @@ class XxxtmorningspiderSpider(scrapy.Spider):
                 C = C + dataimg[3]
                 D = D + dataimg[4]
 
-
         info = {
+            '软件工程基础': '软件工程',
             '数据库技术基础': '数据库技术',
             '关系数据库的数据操作': '数据库技术',
             '数据库管理系统': '数据库技术',
@@ -185,7 +186,9 @@ class XxxtmorningspiderSpider(scrapy.Spider):
         item['optiond'] = D
 
         url = 'http://www.rkpass.cn/tk_jiexi.jsp?product_id=' + product_id + '&tixing=xuanze&answer=&paper_id=&tihao=&cache='
-        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True, meta={'item': item, 'field': field, 'questionNum': questionNum, 'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
+        yield scrapy.Request(url, callback=self.parse_detail, dont_filter=True,
+                             meta={'item': item, 'field': field, 'questionNum': questionNum,
+                                   'knowledgeOne': knowledgeOne, 'knowledgeTwo': knowledgeTwo})
 
     def parse_detail(self, response):
         knowledgeOne = response.meta['knowledgeOne']  # 接收当前题目一级分类
